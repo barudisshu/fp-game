@@ -15,7 +15,6 @@ lazy val slf4jVersion        = "1.7.25"
 lazy val simulacrumVersion   = "0.13.0"
 lazy val catsVersion         = "2.1.1"
 lazy val scalaSwingVersion   = "2.1.1"
-lazy val doodleVersion       = "0.9.21"
 
 // make version compatible with docker for publishing
 ThisBuild / dynverSeparator := "-"
@@ -60,8 +59,7 @@ libraryDependencies ++= {
     "org.typelevel"              %% "cats-core"       % catsVersion,
     "org.typelevel"              %% "cats-kernel"     % catsVersion,
     "org.typelevel"              %% "cats-macros"     % catsVersion,
-    "org.scala-lang.modules"     %% "scala-swing"     % scalaSwingVersion,
-    "org.creativescala"          %% "doodle"          % doodleVersion
+    "org.scala-lang.modules"     %% "scala-swing"     % scalaSwingVersion
   )
 }
 
