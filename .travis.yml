@@ -1,0 +1,33 @@
+language: scala
+jdk: openjdk8
+scala:
+  - 2.12.8
+
+branches:
+  only:
+    - master
+    - /^v[0-9]/
+
+cache:
+  directories:
+    - $HOME/.coursier
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+
+before_cache:
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -delete
+  - find $HOME/.sbt        -name "*.lock"               -delete
+
+notifications:
+  email:
+    on_success: never
+
+env:
+  global:
+    - TRAVIS=true
+
+script:
+  - sbt clean coverage test coverageReport
+
+after_success:
+  - sbt coveralls
