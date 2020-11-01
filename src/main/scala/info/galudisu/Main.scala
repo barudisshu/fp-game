@@ -1,26 +1,53 @@
-package info.galudisu
+import java.awt.Dimension
 
-import scalafx.Includes._
-import scalafx.application.JFXApp
-import scalafx.scene.Scene
-import scalafx.scene.paint.Color._
-import scalafx.scene.shape.Rectangle
+import scala.swing.Swing.ActionListener
+import scala.swing.event.ButtonClicked
+import scala.swing._
 
-object Main extends JFXApp {
-  stage = new JFXApp.PrimaryStage {
-    title.value = "Hello Stage"
-    width = 600
-    height = 450
-    scene = new Scene {
-      fill = LightGreen
-      content = new Rectangle {
-        x = 25
-        y = 40
-        width = 100
-        height = 100
-        fill <== when(hover) choose Green otherwise Red
+object Main extends SimpleSwingApplication {
+  lazy val top: Frame = new MainFrame {
+    contents = new BorderPanel {
+
+      val buttonPanel: FlowPanel = new FlowPanel {
+        val truceButton: RadioButton = new RadioButton("Truce") { selected = true }
+        val easyButton               = new RadioButton("Easy")
+        val hardButton               = new RadioButton("Hard")
+        val restartButton            = new Button("Restart")
+        val exitButton               = new Button("Exit")
+        contents += (truceButton, easyButton, hardButton, restartButton, exitButton)
+
+        val buttonGroup = new ButtonGroup(truceButton, easyButton, hardButton)
+        listenTo(truceButton, easyButton, hardButton, restartButton, exitButton)
+
+        reactions += {
+          case ButtonClicked(`truceButton`)   => sys.exit()
+          case ButtonClicked(`easyButton`)    => sys.exit()
+          case ButtonClicked(`hardButton`)    => sys.exit()
+          case ButtonClicked(`restartButton`) => sys.exit()
+
+          case ButtonClicked(`exitButton`) => sys.exit()
+        }
       }
+
+      add(buttonPanel, BorderPanel.Position.North)
     }
+    title = "AI坦克大战"
+    // centerOnScreen()
+    size = new Dimension(800, 600)
+
   }
 
+  val gameTimer = new javax.swing.Timer(40, ActionListener { _ =>
+    top.repaint()
+  })
+
+  override def startup(args: Array[String]): Unit = {
+    super.startup(args)
+    gameTimer.start()
+  }
+
+  override def shutdown(): Unit = {
+    gameTimer.stop()
+    super.shutdown()
+  }
 }
