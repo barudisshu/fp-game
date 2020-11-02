@@ -12,7 +12,7 @@ object Tank {
   // 射程
   val GunRange = 10000.0
   // 子弹速度
-  val MissileSpeed = 50
+  val MissileSpeed = 10.0
   // 速度
   val MaxSpeed = 50
   // 转向率

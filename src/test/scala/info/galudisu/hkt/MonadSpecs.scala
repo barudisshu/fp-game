@@ -1,4 +1,4 @@
-package info.galudisu.common
+package info.galudisu.hkt
 
 import com.typesafe.scalalogging.LazyLogging
 import org.specs2.ScalaCheck

@@ -1,5 +1,8 @@
 import java.awt.Dimension
 
+import info.galudisu.ai._
+import info.galudisu.stage.{StartingState, World}
+import info.galudisu.ui.PaintWorld
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
 import javax.swing.{JFrame, UIManager}
 
@@ -11,13 +14,19 @@ object Main extends SimpleSwingApplication {
   UIManager.setLookAndFeel(new NimbusLookAndFeel)
   JFrame.setDefaultLookAndFeelDecorated(true)
 
+  var game = StartingState.game
+
   lazy val top: Frame = new MainFrame {
     contents = new BorderPanel {
 
+      val tankPanel: Panel with PaintWorld = new Panel with PaintWorld {
+        def world: World = game.world
+      }
+
       val buttonPanel: FlowPanel = new FlowPanel {
         val truceButton: RadioButton = new RadioButton("停战") { selected = true }
-        val easyButton               = new RadioButton("简单")
-        val hardButton               = new RadioButton("困难")
+        val easyButton: RadioButton  = new RadioButton("简单")
+        val hardButton: RadioButton  = new RadioButton("困难")
         val restartButton            = new Button("重新开始")
         val exitButton               = new Button("退出")
         contents += (truceButton, easyButton, hardButton, restartButton, exitButton)
@@ -26,16 +35,19 @@ object Main extends SimpleSwingApplication {
         listenTo(truceButton, easyButton, hardButton, restartButton, exitButton)
 
         reactions += {
-          case ButtonClicked(`truceButton`)   => sys.exit()
-          case ButtonClicked(`easyButton`)    => sys.exit()
-          case ButtonClicked(`hardButton`)    => sys.exit()
-          case ButtonClicked(`restartButton`) => sys.exit()
+          case ButtonClicked(`truceButton`) => game = game withInterpreter TruceTankAI
+          case ButtonClicked(`easyButton`)  => game = game withInterpreter EasyTankAI
+          case ButtonClicked(`hardButton`)  => game = game withInterpreter HardTankAI
+          case ButtonClicked(`restartButton`) =>
+            game = StartingState.game
+            truceButton.selected = true
 
           case ButtonClicked(`exitButton`) => sys.exit()
         }
       }
 
       add(buttonPanel, BorderPanel.Position.North)
+      add(tankPanel, BorderPanel.Position.Center)
     }
     title = "AI坦克大战"
     iconImage = toolkit.getImage("images/favicon.png")
@@ -45,6 +57,7 @@ object Main extends SimpleSwingApplication {
   }
 
   val gameTimer = new javax.swing.Timer(40, ActionListener { _ =>
+    game = game.runFrame
     top.repaint()
   })
 
