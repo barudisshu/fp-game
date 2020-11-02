@@ -1,19 +1,25 @@
-import java.awt.{Dimension, Toolkit}
+import java.awt.Dimension
+
+import javax.swing.plaf.nimbus.NimbusLookAndFeel
+import javax.swing.{JFrame, UIManager}
 
 import scala.swing.Swing.ActionListener
-import scala.swing.event.ButtonClicked
 import scala.swing._
+import scala.swing.event.ButtonClicked
 
 object Main extends SimpleSwingApplication {
+  UIManager.setLookAndFeel(new NimbusLookAndFeel)
+  JFrame.setDefaultLookAndFeelDecorated(true)
+
   lazy val top: Frame = new MainFrame {
     contents = new BorderPanel {
 
       val buttonPanel: FlowPanel = new FlowPanel {
-        val truceButton: RadioButton = new RadioButton("Truce") { selected = true }
-        val easyButton               = new RadioButton("Easy")
-        val hardButton               = new RadioButton("Hard")
-        val restartButton            = new Button("Restart")
-        val exitButton               = new Button("Exit")
+        val truceButton: RadioButton = new RadioButton("停战") { selected = true }
+        val easyButton               = new RadioButton("简单")
+        val hardButton               = new RadioButton("困难")
+        val restartButton            = new Button("重新开始")
+        val exitButton               = new Button("退出")
         contents += (truceButton, easyButton, hardButton, restartButton, exitButton)
 
         val buttonGroup = new ButtonGroup(truceButton, easyButton, hardButton)
@@ -32,9 +38,10 @@ object Main extends SimpleSwingApplication {
       add(buttonPanel, BorderPanel.Position.North)
     }
     title = "AI坦克大战"
-    size = new Dimension(800, 600)
-    centerOnScreen()
     iconImage = toolkit.getImage("images/favicon.png")
+    size = new Dimension(1200, 800)
+    centerOnScreen()
+    visible = true
   }
 
   val gameTimer = new javax.swing.Timer(40, ActionListener { _ =>
