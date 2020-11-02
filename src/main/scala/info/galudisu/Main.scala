@@ -1,4 +1,4 @@
-import java.awt.Dimension
+import java.awt.{Dimension, Toolkit}
 
 import scala.swing.Swing.ActionListener
 import scala.swing.event.ButtonClicked
@@ -32,9 +32,9 @@ object Main extends SimpleSwingApplication {
       add(buttonPanel, BorderPanel.Position.North)
     }
     title = "AI坦克大战"
-    // centerOnScreen()
     size = new Dimension(800, 600)
-
+    centerOnScreen()
+    iconImage = toolkit.getImage("images/favicon.png")
   }
 
   val gameTimer = new javax.swing.Timer(40, ActionListener { _ =>
