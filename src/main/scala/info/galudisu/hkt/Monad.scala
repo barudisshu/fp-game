@@ -2,10 +2,6 @@ package info.galudisu.hkt
 
 import scala.language.higherKinds
 
-/**
-  * monad
-  * @tparam F 函子
-  */
 trait Monad[F[_]] {
   def flatMap[A, B](v: F[A])(f: A => F[B]): F[B]
   def unit[A](a: A): F[A]

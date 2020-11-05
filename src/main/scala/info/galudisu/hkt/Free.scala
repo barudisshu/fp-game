@@ -18,14 +18,6 @@ object Free {
   def bind[F[_], A, B](fa: Free[F, A])(f: A => Free[F, B]): Free[F, B] = fa.flatMap(f)
 }
 
-/**
-  * CoYoneda则是，将协变（a -> b）变成逆变 (b -> a)
-  * (b -> a) -> F b ≅ F a
-  *
-  * FreeMonad的形式总是先“挂起”，然后再“消费”
-  *
-  * Free Monad是一种Trampoline模式的泛化
-  */
 sealed trait Free[F[_], A] {
   self =>
   import Free._
@@ -35,7 +27,6 @@ sealed trait Free[F[_], A] {
 
   def >>[B](f: => Free[F, B]): Free[F, B] = bind(this)(_ => f)
 
-  /** flatMap 别名 */
   final def >>=[B](f: A => Free[F, B]): Free[F, B]                               = this flatMap f
   final def fold[B](r: A => B, s: F[Free[F, A]] => B)(implicit F: Functor[F]): B = resume.fold(s, r)
 

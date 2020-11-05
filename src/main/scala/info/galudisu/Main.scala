@@ -1,7 +1,7 @@
 import java.awt.Dimension
 
 import info.galudisu.ai._
-import info.galudisu.stage.{StartingState, World}
+import info.galudisu.stage.{StartingState, TankGame, World}
 import info.galudisu.ui.PaintWorld
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
 import javax.swing.{JFrame, UIManager}
@@ -14,7 +14,7 @@ object Main extends SimpleSwingApplication {
   UIManager.setLookAndFeel(new NimbusLookAndFeel)
   JFrame.setDefaultLookAndFeelDecorated(true)
 
-  var game = StartingState.game
+  var game: TankGame = StartingState.game
 
   lazy val top: Frame = new MainFrame {
     contents = new BorderPanel {
@@ -50,7 +50,7 @@ object Main extends SimpleSwingApplication {
       add(tankPanel, BorderPanel.Position.Center)
     }
     title = "AI坦克大战"
-    iconImage = toolkit.getImage("images/favicon.png")
+    iconImage = toolkit.getImage("images/favicon.ico")
     size = new Dimension(1200, 800)
     centerOnScreen()
     visible = true
