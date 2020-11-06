@@ -10,11 +10,9 @@ scalaVersion in ThisBuild := "2.12.8"
 // dependencies versions
 lazy val log4jVersion        = "2.7"
 lazy val scalaLoggingVersion = "3.7.2"
-lazy val chillVersion        = "0.9.5"
+lazy val catsVersion         = "2.2.0"
 lazy val slf4jVersion        = "1.7.25"
-lazy val simulacrumVersion   = "0.13.0"
 lazy val scalaSwingVersion   = "2.1.1"
-lazy val sqlite4sVersion = "0.2.0"
 lazy val specsVersion        = "4.10.5"
 lazy val scalatestVersion    = "3.0.4"
 lazy val scalacheckVersion   = "1.14.3"
@@ -58,8 +56,12 @@ libraryDependencies ++= {
     "org.apache.logging.log4j"   % "log4j-api"        % log4jVersion,
     "org.apache.logging.log4j"   % "log4j-slf4j-impl" % log4jVersion,
     "com.typesafe.scala-logging" %% "scala-logging"   % scalaLoggingVersion,
+    // cats
+    "org.typelevel" %% "cats-core" % catsVersion,
+    "org.typelevel" %% "cats-laws" % catsVersion,
+    "org.typelevel" %% "cats-free" % catsVersion,
     // ui design
-    "org.scala-lang.modules"     %% "scala-swing"     % scalaSwingVersion,
+    "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion,
     // test
     "org.specs2"     %% "specs2-core"       % specsVersion      % Test,
     "org.specs2"     %% "specs2-mock"       % specsVersion      % Test,

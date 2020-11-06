@@ -1,10 +1,12 @@
 package info.galudisu.ai
 
-import info.galudisu.hkt._
+import cats._
+import free._
 import Free._
+import implicits._
 
 import info.galudisu.maths._
-import info.galudisu.model.{Entity, Tank}
+import info.galudisu.model._
 
 sealed trait Move[+A]
 case class Accelerate[A](next: A)                            extends Move[A]
@@ -38,7 +40,7 @@ object Move {
 // Lifting functions.  Note that liftF is implicit within the trait.
 trait BasicMoves {
   type AI[A] = Free[Move, A]
-  val AIDone: AI[Unit]                                   = point(())
+  val AIDone: AI[Unit]                                   = pure(())
   private implicit def liftMove[A](move: Move[A]): AI[A] = liftF(move)
   def accelerate: AI[Unit]                               = Accelerate(())
   def rotateLeft: AI[Unit]                               = RotateLeft(None, ())
@@ -66,7 +68,7 @@ trait AdvancedMoves extends BasicMoves {
 
   def loop(ai: AI[Unit]): AI[Unit] = ai >> loop(ai)
 
-  def unless(b: Boolean)(ai: => AI[Unit]): AI[Unit] = if (b) point(()) else void(ai)
+  def unless(b: Boolean)(ai: => AI[Unit]): AI[Unit] = if (b) AIDone else ai.void
 
   def aimAtTank(tank: Tank): AI[Unit] =
     for {

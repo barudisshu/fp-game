@@ -3,10 +3,6 @@ Functional Programming For Game dev with Monad
 
 [![Travis](https://travis-ci.org/barudisshu/fp-game.svg?branch=master)](https://travis-ci.org/barudisshu/fp-game/) [![codecov](https://codecov.io/gh/barudisshu/fp-game/branch/master/graph/badge.svg)](https://codecov.io/gh/barudisshu/fp-game)
 
-## Monad 
-
-Does not introduce any monad library. We eat our dog food.
-
 ## 画图
 
 使用Java2D构建所有元素.
