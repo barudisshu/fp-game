@@ -22,7 +22,7 @@ object Tank {
 
   def apply(entityId: String, pos: Vec): Tank = {
     val physics = Physics(Angle.Zero, pos, Vec.Zero, Vec.Zero, Tank.Size, Friction, MaxSpeed)
-    new Tank(EntityId(entityId), AIDone, physics, Angle.Zero, true)
+    new Tank(EntityId(entityId), AIDone, physics, Angle.Zero, alive = true)
   }
 
   /**
@@ -32,19 +32,25 @@ object Tank {
     case tank: Tank => Some(tank)
     case _          => None
   }
-
 }
 
 /**
   * 坦克: 有各种各样的坦克
   */
-case class Tank(id: EntityId, ai: AI[Unit], physics: Physics, gunAngle: Angle, alive: Boolean) extends Entity {
+case class Tank(id: EntityId,
+                ai: AI[Unit],
+                physics: Physics,
+                gunAngle: Angle,
+                gunRange: Double = Tank.GunRange,
+                missileSpeed: Double = Tank.MissileSpeed,
+                alive: Boolean)
+    extends Entity {
   type This = Tank
   def replaceId(newId: EntityId): Tank           = copy(id = newId)
   def gunFacing: Angle                           = physics.facing + gunAngle
   def accelerate: Tank                           = accelerateForward(Tank.Acceleration)
   def withAI(newAI: Moves.AI[Unit]): Tank        = copy(ai = newAI)
   def kill: Tank                                 = copy(alive = false, ai = AIDone)
-  def fire: Missile                              = Missile.fireToward(pos + Vec.fromAngle(facing, 20.0), facing, Tank.MissileSpeed, Tank.GunRange)
+  def fire: Missile                              = Missile.fireToward(pos + Vec.fromAngle(facing, 20.0), facing, missileSpeed, gunRange)
   def updatePhysics(f: Physics => Physics): Tank = copy(physics = f(physics))
 }
