@@ -2,10 +2,12 @@ import info.galudisu.stage.{StartingState, TankGame, World}
 import info.galudisu.ui.PaintWorld
 import io.reactivex.rxjavafx.observables.JavaFxObservable
 import javafx.application.Application
+import javafx.geometry.{Insets, Pos}
 import javafx.scene.Scene
 import javafx.scene.canvas.{Canvas, GraphicsContext}
+import javafx.scene.control.{Button, RadioButton}
 import javafx.scene.image.Image
-import javafx.scene.layout.StackPane
+import javafx.scene.layout.{BorderPane, FlowPane, HBox, VBox}
 import javafx.stage.Stage
 import javafx.util.Duration
 
@@ -26,8 +28,30 @@ class TankWorld extends Application {
     val canvas                       = new Canvas(width, height)
     implicit val gc: GraphicsContext = canvas.getGraphicsContext2D
 
-    val root = new StackPane(canvas)
-    root.setAlignment(javafx.geometry.Pos.BOTTOM_CENTER)
+    val buttonPanel = new HBox()
+
+    val content = new FlowPane()
+
+    val truceButton   = new RadioButton("停战")
+    val easyButton    = new RadioButton("简单")
+    val hardButton    = new RadioButton("困难")
+    val restartButton = new Button("重新开始")
+    val exitButton    = new Button("退出")
+
+    content.setPadding(new Insets(10))
+    content.setHgap(10)
+    content.setAlignment(Pos.CENTER)
+    content.getChildren.addAll(truceButton, easyButton, hardButton, restartButton, exitButton)
+    buttonPanel.getChildren.add(content)
+    buttonPanel.setAlignment(Pos.CENTER)
+
+    val tankPanel = new HBox(canvas)
+    tankPanel.setAlignment(Pos.CENTER)
+
+    val root = new BorderPane()
+    root.setTop(buttonPanel)
+    root.setCenter(tankPanel)
+
     world.paintBackground(width, height)
 
     JavaFxObservable

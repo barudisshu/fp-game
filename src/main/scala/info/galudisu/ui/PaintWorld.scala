@@ -9,9 +9,12 @@ import javafx.scene.paint.Color
 trait PaintWorld {
 
   def world: World
-  def paintBackground(width: Int, height: Int)(implicit gc: GraphicsContext): Unit = {
+  def paintBackground(width: Double, height: Double)(implicit gc: GraphicsContext): Unit = {
     gc.setFill(Color.LIGHTGRAY)
-    gc.fillRect(0, 0, width, height)
+    val worldW = world.bounds.width
+    val worldH = world.bounds.height
+    gc.translate(width / 2 - worldW / 2, height / 2 - worldH / 2)
+    paintWorld
   }
 
   def paintWorld(implicit gc: GraphicsContext): Unit = {
