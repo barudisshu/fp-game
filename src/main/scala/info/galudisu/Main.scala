@@ -1,73 +1,50 @@
-import java.awt.Dimension
-
-import info.galudisu.ai._
 import info.galudisu.stage.{StartingState, TankGame, World}
 import info.galudisu.ui.PaintWorld
-import javax.swing.plaf.nimbus.NimbusLookAndFeel
-import javax.swing.{JFrame, UIManager}
+import io.reactivex.rxjavafx.observables.JavaFxObservable
+import javafx.application.Application
+import javafx.scene.Scene
+import javafx.scene.canvas.{Canvas, GraphicsContext}
+import javafx.scene.image.Image
+import javafx.scene.layout.StackPane
+import javafx.stage.Stage
+import javafx.util.Duration
 
-import scala.swing.Swing.ActionListener
-import scala.swing._
-import scala.swing.event.ButtonClicked
+import scala.language.postfixOps
 
-object Main extends SimpleSwingApplication {
-  UIManager.setLookAndFeel(new NimbusLookAndFeel)
-  JFrame.setDefaultLookAndFeelDecorated(true)
+class TankWorld extends Application {
+
+  val width  = 1200
+  val height = 800
 
   var game: TankGame = StartingState.game
+  val world: PaintWorld = new PaintWorld {
+    override def world: World = game.world
+  }
 
-  lazy val top: Frame = new MainFrame {
-    contents = new BorderPanel {
+  override def start(primaryStage: Stage): Unit = {
 
-      val tankPanel: Panel with PaintWorld = new Panel with PaintWorld {
-        def world: World = game.world
+    val canvas                       = new Canvas(width, height)
+    implicit val gc: GraphicsContext = canvas.getGraphicsContext2D
+
+    val root = new StackPane(canvas)
+    root.setAlignment(javafx.geometry.Pos.BOTTOM_CENTER)
+    world.paintBackground(width, height)
+
+    JavaFxObservable
+      .interval(Duration.millis(100))
+      .doOnNext { _ =>
+        world.paintWorld
       }
+      .subscribe()
 
-      val buttonPanel: FlowPanel = new FlowPanel {
-        val truceButton: RadioButton = new RadioButton("停战") { selected = true }
-        val easyButton: RadioButton  = new RadioButton("简单")
-        val hardButton: RadioButton  = new RadioButton("困难")
-        val restartButton            = new Button("重新开始")
-        val exitButton               = new Button("退出")
-        contents += (truceButton, easyButton, hardButton, restartButton, exitButton)
-
-        val buttonGroup = new ButtonGroup(truceButton, easyButton, hardButton)
-        listenTo(truceButton, easyButton, hardButton, restartButton, exitButton)
-
-        reactions += {
-          case ButtonClicked(`truceButton`) => game = game withInterpreter TruceTankAI
-          case ButtonClicked(`easyButton`)  => game = game withInterpreter EasyTankAI
-          case ButtonClicked(`hardButton`)  => game = game withInterpreter HardTankAI
-          case ButtonClicked(`restartButton`) =>
-            game = StartingState.game
-            truceButton.selected = true
-
-          case ButtonClicked(`exitButton`) => sys.exit()
-        }
-      }
-
-      add(buttonPanel, BorderPanel.Position.North)
-      add(tankPanel, BorderPanel.Position.Center)
-    }
-    title = "AI坦克大战"
-    iconImage = toolkit.getImage("images/favicon.ico")
-    size = new Dimension(1200, 800)
-    centerOnScreen()
-    visible = true
+    primaryStage.setScene(new Scene(root, width, height))
+    primaryStage.setTitle("Tank game")
+    primaryStage.getIcons.add(new Image("images/favicon.ico"))
+    primaryStage.show()
   }
 
-  val gameTimer = new javax.swing.Timer(40, ActionListener { _ =>
-    game = game.runFrame
-    top.repaint()
-  })
+}
 
-  override def startup(args: Array[String]): Unit = {
-    super.startup(args)
-    gameTimer.start()
-  }
-
-  override def shutdown(): Unit = {
-    gameTimer.stop()
-    super.shutdown()
-  }
+object Main extends App {
+  Application.launch(classOf[TankWorld])
 }

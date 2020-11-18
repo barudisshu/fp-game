@@ -13,7 +13,6 @@ lazy val scalaLoggingVersion = "3.7.2"
 lazy val rxVersion           = "0.27.0"
 lazy val rxjavafxVersion     = "2.2.2"
 lazy val slf4jVersion        = "1.7.25"
-lazy val scalaSwingVersion   = "2.1.1"
 lazy val specsVersion        = "4.10.5"
 lazy val scalatestVersion    = "3.0.4"
 lazy val scalacheckVersion   = "1.14.3"
@@ -61,7 +60,6 @@ libraryDependencies ++= {
     "io.reactivex" %% "rxscala" % rxVersion,
     // ui design
     "io.reactivex.rxjava2"   % "rxjavafx"     % rxjavafxVersion,
-    "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion,
     // test
     "org.specs2"     %% "specs2-core"       % specsVersion      % Test,
     "org.specs2"     %% "specs2-mock"       % specsVersion      % Test,
