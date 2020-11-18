@@ -1,58 +1,69 @@
 package info.galudisu.ui
 
-import info.galudisu.maths._
-import info.galudisu.model._
-import info.galudisu.stage.World
-import javafx.scene.canvas.GraphicsContext
-import javafx.scene.paint.Color
+import java.awt.{Color, Graphics2D}
 
-trait PaintWorld {
+import info.galudisu.maths.{Rect, Vec}
+import info.galudisu.model.{Entity, Missile, Tank}
+import info.galudisu.stage.World
+
+import scala.swing.Component
+
+trait PaintWorld extends Component {
 
   def world: World
-  def paintBackground(width: Double, height: Double)(implicit gc: GraphicsContext): Unit = {
-    gc.setFill(Color.LIGHTGRAY)
+
+  background = Color.lightGray
+
+  override def paintComponent(g: Graphics2D): Unit = {
+    super.paintComponent(g)
+    val scrW   = size.width.toDouble
+    val scrH   = size.height.toDouble
     val worldW = world.bounds.width
     val worldH = world.bounds.height
-    gc.translate(width / 2 - worldW / 2, height / 2 - worldH / 2)
-    paintWorld
+    g.translate(scrW / 2 - worldW / 2, scrH / 2 - worldH / 2)
+    paintWorld(g)
   }
 
-  def paintWorld(implicit gc: GraphicsContext): Unit = {
-    gc.setFill(Color.WHITE)
-    fillRect(world.bounds)
-    gc.setFill(Color.BLACK)
-    paintRect(world.bounds)
-    world.entities foreach paintEntity
+  def paintWorld(g: Graphics2D): Unit = {
+
+    g.setColor(Color.white)
+    fillRect(g, world.bounds)
+
+    g.setColor(Color.black)
+    paintRect(g, world.bounds)
+
+    world.entities foreach paintEntity(g)
   }
 
-  def paintRect(r: Rect)(implicit gc: GraphicsContext) {
+  def paintRect(g: Graphics2D, r: Rect) {
     val (x, y, w, h) = r.toSizeIntTuple
-    gc.strokeRect(x, y, w, h)
+    g.drawRect(x, y, w, h)
   }
 
-  def fillRect(r: Rect)(implicit gc: GraphicsContext) {
+  def fillRect(g: Graphics2D, r: Rect) {
     val (x, y, w, h) = r.toSizeIntTuple
-    gc.fillRect(x, y, w, h)
+    g.fillRect(x, y, w, h)
   }
 
-  def paintEntity(e: Entity)(implicit gc: GraphicsContext): Unit = e match {
-    case t: Tank    => paintTank(t)
-    case m: Missile => paintMissile(m)
+  def paintEntity(g: Graphics2D)(e: Entity): Unit = e match {
+    case t: Tank    => paintTank(g, t)
+    case m: Missile => paintMissile(g, m)
     case x          => sys.error("Unexpected entity: " + x)
   }
 
-  def paintTank(t: Tank)(implicit gc: GraphicsContext): Unit = {
-    gc.setFill(if (t.dead) Color.GRAY else Color.BLACK)
-    fillRect(t.bounds)
+  def paintTank(g: Graphics2D, t: Tank): Unit = {
+    g.setColor(if (t.dead) Color.gray else Color.black)
+    fillRect(g, t.bounds)
     val (x1, y1) = t.pos.toIntTuple
     val vec      = Vec.fromAngle(t.facing, 20.0)
+
     val (x2, y2) = (t.pos + vec).toIntTuple
-    gc.strokeLine(x1, y1, x2, y2)
+    g.drawLine(x1, y1, x2, y2)
   }
 
-  def paintMissile(m: Missile)(implicit gc: GraphicsContext): Unit = {
+  def paintMissile(g: Graphics2D, m: Missile): Unit = {
     val (x, y, width, height) = m.bounds.toSizeIntTuple
-    gc.setFill(Color.RED)
-    gc.fillOval(x, y, width, height)
+    g.setColor(Color.red)
+    g.fillOval(x, y, width, height)
   }
 }
