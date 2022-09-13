@@ -1,6 +1,6 @@
 package info.galudisu.ai
 
-import info.galudisu.ai.Moves._
+import info.galudisu.ai.Moves.*
 import info.galudisu.model.{Entity, EntityId}
 import info.galudisu.stage.World
 
@@ -40,8 +40,10 @@ trait MoveInterpreter extends ((World, Entity) => World) {
     world.updateEntity(id)(e => e withAI nextAI(f(world)))
   }
 
-  protected final def observeEntityInWorld[A](nextAI: (A => AI[Unit]))(f: (World, Entity) => A): WorldChange = {
-    (world, id) =>
-      world.updateEntity(id)(e => e withAI nextAI(f(world, e)))
+  protected final def observeEntityInWorld[A](
+      nextAI: (A => AI[Unit])
+    )(
+      f: (World, Entity) => A): WorldChange = { (world, id) =>
+    world.updateEntity(id)(e => e withAI nextAI(f(world, e)))
   }
 }

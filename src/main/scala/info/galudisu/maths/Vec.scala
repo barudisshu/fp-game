@@ -1,6 +1,6 @@
 package info.galudisu.maths
 
-import scala.math._
+import scala.math.*
 
 object Vec {
   def fromAngle(angle: Angle, length: Double): Vec = Vec(length * angle.cos, length * angle.sin)
@@ -9,14 +9,14 @@ object Vec {
 }
 
 /**
-  * 向量
-  */
+ * 向量
+ */
 case class Vec(x: Double, y: Double) {
   def angle: Angle = {
-    if (x > 0) Angle(atan(y / x))
-    else if (x < 0) Angle(atan(y / x) + Pi)
+    if x > 0 then Angle(atan(y / x))
+    else if x < 0 then Angle(atan(y / x) + Pi)
     else {
-      if (y <= 0) Angle.Zero
+      if y <= 0 then Angle.Zero
       else Angle.Quarter
     }
   }

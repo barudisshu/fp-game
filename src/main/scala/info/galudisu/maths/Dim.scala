@@ -1,10 +1,12 @@
 package info.galudisu.maths
 
 /**
-  * 维
-  * @param width 宽
-  * @param height 高
-  */
+ * 维
+ * @param width
+ *   宽
+ * @param height
+ *   高
+ */
 case class Dim(width: Double, height: Double) {
   def positionedAt(topLeft: Vec): Rect = Rect(topLeft.x, topLeft.y, topLeft.x + width, topLeft.y + height)
   def centeredAt(center: Vec): Rect = {

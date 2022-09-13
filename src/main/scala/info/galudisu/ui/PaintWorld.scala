@@ -1,11 +1,10 @@
 package info.galudisu.ui
 
-import java.awt.{Color, Graphics2D}
-
-import info.galudisu.maths.{Rect, Vec}
-import info.galudisu.model.{Entity, Missile, Tank}
+import info.galudisu.maths.{ Rect, Vec }
+import info.galudisu.model.{ Entity, Missile, Tank }
 import info.galudisu.stage.World
 
+import java.awt.{ Color, Graphics2D }
 import scala.swing.Component
 
 trait PaintWorld extends Component {
@@ -35,12 +34,12 @@ trait PaintWorld extends Component {
     world.entities foreach paintEntity(g)
   }
 
-  def paintRect(g: Graphics2D, r: Rect) {
+  def paintRect(g: Graphics2D, r: Rect): Unit = {
     val (x, y, w, h) = r.toSizeIntTuple
     g.drawRect(x, y, w, h)
   }
 
-  def fillRect(g: Graphics2D, r: Rect) {
+  def fillRect(g: Graphics2D, r: Rect): Unit = {
     val (x, y, w, h) = r.toSizeIntTuple
     g.fillRect(x, y, w, h)
   }
@@ -52,7 +51,7 @@ trait PaintWorld extends Component {
   }
 
   def paintTank(g: Graphics2D, t: Tank): Unit = {
-    g.setColor(if (t.dead) Color.gray else Color.black)
+    g.setColor(if t.dead then Color.gray else Color.black)
     fillRect(g, t.bounds)
     val (x1, y1) = t.pos.toIntTuple
     val vec      = Vec.fromAngle(t.facing, 20.0)

@@ -1,8 +1,8 @@
 package info.galudisu.stage
 
 import info.galudisu.ai.MoveInterpreter
-import info.galudisu.maths._
-import info.galudisu.model._
+import info.galudisu.maths.*
+import info.galudisu.model.*
 
 import scala.collection.SortedMap
 import scala.collection.immutable.TreeMap
@@ -10,10 +10,13 @@ import scala.collection.immutable.TreeMap
 object World {
 
   def apply(bounds: Dim, entities: Seq[Entity]): World =
-    new World(bounds, TreeMap(entities.map(t => t.id -> t): _*), 1)
+    new World(bounds, TreeMap(entities.map(t => t.id -> t)*), 1)
 }
 
-class World private (dimensions: Dim, entityMap: SortedMap[EntityId, Entity], nextId: Int) {
+class World private (
+    dimensions: Dim,
+    entityMap: SortedMap[EntityId, Entity],
+    nextId: Int) {
   lazy val entities: Seq[Entity] = entityMap.values.toIndexedSeq
   private lazy val entityIds     = entityMap.keys
 
@@ -25,9 +28,10 @@ class World private (dimensions: Dim, entityMap: SortedMap[EntityId, Entity], ne
     val otherTanks = (entityMap - e.id).values.collect {
       case Tank(t) if t.alive => t
     }
-    if (otherTanks.nonEmpty) {
+    if otherTanks.nonEmpty then {
       Some(otherTanks.minBy(_ distanceTo e))
-    } else {
+    }
+    else {
       None
     }
   }
@@ -36,7 +40,7 @@ class World private (dimensions: Dim, entityMap: SortedMap[EntityId, Entity], ne
     entities.filter(_.bounds intersects rect)
 
   private def sanitizeId(e: Entity): Entity =
-    if (e.id == EntityId.Auto) e.replaceId(EntityId(s"[AUTO-$nextId]"))
+    if e.id == EntityId.Auto then e.replaceId(EntityId(s"[AUTO-$nextId]"))
     else e
 
   def updateEntity(id: EntityId)(f: Entity => Entity): World = {
@@ -56,7 +60,7 @@ class World private (dimensions: Dim, entityMap: SortedMap[EntityId, Entity], ne
   private def killCollidingEntities: World = {
     val newlyKilled = for {
       e <- entities
-        x <- collidingEntities(e.bounds) if !e.sameAs(x)
+      x <- collidingEntities(e.bounds) if !e.sameAs(x)
     } yield x.id -> x.kill
 
     new World(dimensions, entityMap ++ newlyKilled, nextId)

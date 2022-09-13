@@ -1,8 +1,8 @@
 package info.galudisu.maths
 
 /**
-  * 角度
-  */
+ * 角度
+ */
 object Angle {
 
   val Pi: Double      = math.Pi
@@ -15,18 +15,15 @@ object Angle {
   val ThreeQuarters: Angle = Angle(3 * Pi / 2)
   val Full: Angle          = Angle(TwoPi)
 
-  implicit class DoubleOps(d: Double) {
-    def degrees: Angle = Angle.degrees(d)
-    def radians: Angle = Angle(d)
-  }
-
-  def degrees(degs: Double): Angle = Angle(degs * Pi / 180.0)
+  extension (degs: Double)
+    def degrees: Angle = Angle(degs * Pi / 180.0)
+    def radians: Angle = Angle(degs)
 
   def normalize(radians: Double): Double = {
     val fullCycles       = (radians / TwoPi).asInstanceOf[Int]
     val possiblyNegative = radians - TwoPi * fullCycles
 
-    if (possiblyNegative < 0) possiblyNegative + TwoPi
+    if possiblyNegative < 0 then possiblyNegative + TwoPi
     else possiblyNegative
   }
 
@@ -34,11 +31,12 @@ object Angle {
 }
 
 /**
-  * 角度
-  * @param radians 度数
-  */
+ * 角度
+ * @param radians
+ *   度数
+ */
 class Angle private (val radians: Double) extends AnyVal with Ordered[Angle] {
-  import Angle._
+  import Angle.*
 
   def sin: Double = math.sin(radians)
   def cos: Double = math.cos(radians)
@@ -54,8 +52,8 @@ class Angle private (val radians: Double) extends AnyVal with Ordered[Angle] {
   def /(factor: Double): Angle = Angle(radians / factor)
 
   override def compare(that: Angle): Int = {
-    if (this == that) 0
-    else if (this.radians < that.radians) -1
+    if this == that then 0
+    else if this.radians < that.radians then -1
     else +1
   }
 
@@ -64,11 +62,11 @@ class Angle private (val radians: Double) extends AnyVal with Ordered[Angle] {
   def isRightOf(that: Angle): Boolean = (that == opposite) || (that != this && shiftSin(that.radians) > 0)
   def distanceTo(that: Angle): Angle = {
     val diff = that - this
-    if (diff < Angle.Half) diff else -diff
+    if diff < Angle.Half then diff else -diff
   }
   def addUpTo(add: Angle, upTo: Angle): Angle = {
     val added = this + add
-    if (isLeftOf(upTo) != added.isLeftOf(upTo)) upTo else added
+    if isLeftOf(upTo) != added.isLeftOf(upTo) then upTo else added
   }
   override def toString: String = s"Angle($radians)"
 }

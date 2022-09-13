@@ -1,19 +1,19 @@
 package info.galudisu.ai
 
-import info.galudisu.ai.Moves._
-import info.galudisu.maths._
-import info.galudisu.model._
+import info.galudisu.ai.Moves.*
+import info.galudisu.maths.*
+import info.galudisu.model.*
 
 import scala.util.Random
 
 object HardTankAI extends DefaultTankAI
 
 object EasyTankAI extends DefaultTankAI {
-  import Angle._
+  import Angle.*
 
   override def interpretMove(move: Move[AI[Unit]]): WorldChange = move match {
     case Fire(next) =>
-      if (Random.nextBoolean) doNothing(next)
+      if Random.nextBoolean then doNothing(next)
       else super.interpretMove(move)
 
     case AngleTo(toPos, onAngle) =>

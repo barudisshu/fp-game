@@ -1,13 +1,12 @@
-import java.awt.Dimension
-
-import info.galudisu.ai._
+import info.galudisu.ai.*
 import info.galudisu.stage.{StartingState, TankGame, World}
 import info.galudisu.ui.PaintWorld
+
+import java.awt.Dimension
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
 import javax.swing.{JFrame, UIManager}
-
+import scala.swing.*
 import scala.swing.Swing.ActionListener
-import scala.swing._
 import scala.swing.event.ButtonClicked
 
 object Main extends SimpleSwingApplication {
@@ -56,10 +55,11 @@ object Main extends SimpleSwingApplication {
     visible = true
   }
 
-  val gameTimer = new javax.swing.Timer(40, ActionListener { _ =>
-    game = game.runFrame
-    top.repaint()
-  })
+  val gameTimer = new javax.swing.Timer(40,
+                                        ActionListener { _ =>
+                                          game = game.runFrame
+                                          top.repaint()
+                                        })
 
   override def startup(args: Array[String]): Unit = {
     super.startup(args)

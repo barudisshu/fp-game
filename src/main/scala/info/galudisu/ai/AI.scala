@@ -1,9 +1,10 @@
 package info.galudisu.ai
 
-import info.galudisu.hkt._
-import Free._
-
-import info.galudisu.maths._
+import cats.implicits.*
+import cats.Functor
+import cats.free.Free
+import cats.free.Free.*
+import info.galudisu.maths.*
 import info.galudisu.model.{Entity, Tank}
 
 sealed trait Move[+A]
@@ -60,13 +61,13 @@ trait AdvancedMoves extends BasicMoves {
   implicit class AIOps(ai: AI[Unit]) {
     def *(times: Int): AI[Unit] = {
       require(times >= 1)
-      if (times == 1) ai else ai >> this * (times - 1)
+      if times == 1 then ai else ai >> this * (times - 1)
     }
   }
 
   def loop(ai: AI[Unit]): AI[Unit] = ai >> loop(ai)
 
-  def unless(b: Boolean)(ai: => AI[Unit]): AI[Unit] = if (b) point(()) else void(ai)
+  def unless(b: Boolean)(ai: => AI[Unit]): AI[Unit] = if b then point(()) else void(ai)
 
   def aimAtTank(tank: Tank): AI[Unit] =
     for {
@@ -89,7 +90,7 @@ trait AdvancedMoves extends BasicMoves {
       _ <- unless(ok) {
         val left = tank.facing isLeftOf angle
         val rotationAction =
-          if (left) rotateLeftUpTo(angle)
+          if left then rotateLeftUpTo(angle)
           else rotateRightUpTo(angle)
         rotationAction >> rotateTowards(angle)
       }
@@ -100,12 +101,13 @@ trait AdvancedMoves extends BasicMoves {
   def moveTo(pos: Vec): AI[Unit] =
     for {
       arrived <- isAt(pos)
-      _ <- unless(arrived)(for {
-        angle <- angleTo(pos)
-        _     <- rotateTowards(angle)
-        _     <- accelerate
-        _     <- moveTo(pos)
-      } yield ())
+      _ <- unless(arrived)(
+        for {
+          angle <- angleTo(pos)
+          _     <- rotateTowards(angle)
+          _     <- accelerate
+          _     <- moveTo(pos)
+        } yield ())
     } yield ()
 
   def searchAndDestroy: AI[Unit] =

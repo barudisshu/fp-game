@@ -16,8 +16,8 @@ trait Alive {
 
   def kill: This
   def alive: Boolean
-  final def onlyIfAlive[A](a: A)(f: A => A): A = if (alive) f(a) else a
-  final def dead: Boolean = !alive
+  final def onlyIfAlive[A](a: A)(f: A => A): A = if alive then f(a) else a
+  final def dead: Boolean                      = !alive
 }
 
 trait Physical {

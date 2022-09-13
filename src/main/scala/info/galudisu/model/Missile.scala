@@ -2,24 +2,33 @@ package info.galudisu.model
 
 import info.galudisu.ai.Moves
 import info.galudisu.ai.Moves.AIDone
-import info.galudisu.maths.{Angle, Dim, Percentage, Vec}
+import info.galudisu.maths.{ Angle, Dim, Percentage, Vec }
 
 /**
-  * 子弹
-  */
+ * 子弹
+ */
 object Missile {
   // 子弹没有摩擦的
   val Friction: Percentage = Percentage.Zero
   val MaxSpeed             = 100.0
   val Size: Dim            = Dim(6, 6)
 
-  def fireToward(fromPos: Vec, angle: Angle, speed: Double, range: Double): Missile = {
+  def fireToward(
+      fromPos: Vec,
+      angle: Angle,
+      speed: Double,
+      range: Double): Missile = {
     val physics = Physics(angle, fromPos, Vec.fromAngle(angle, speed), Vec.Zero, Missile.Size, Friction, MaxSpeed)
     Missile(EntityId.Auto, physics, range, alive = true)
   }
 }
 
-case class Missile(id: EntityId, physics: Physics, range: Double, alive: Boolean) extends Entity {
+case class Missile(
+    id: EntityId,
+    physics: Physics,
+    range: Double,
+    alive: Boolean)
+    extends Entity {
   override type This = Missile
 
   override def ai: Moves.AI[Unit]                         = AIDone

@@ -1,8 +1,8 @@
 package info.galudisu.model
 
 import info.galudisu.ai.Moves
-import info.galudisu.ai.Moves._
-import info.galudisu.maths._
+import info.galudisu.ai.Moves.*
+import info.galudisu.maths.*
 
 object Tank {
   // 加速
@@ -26,8 +26,8 @@ object Tank {
   }
 
   /**
-    * 解构具体哪种类型的tank
-    */
+   * 解构具体哪种类型的tank
+   */
   def unapply(e: Entity): Option[Tank] = e match {
     case tank: Tank => Some(tank)
     case _          => None
@@ -35,22 +35,23 @@ object Tank {
 }
 
 /**
-  * 坦克: 有各种各样的坦克
-  */
-case class Tank(id: EntityId,
-                ai: AI[Unit],
-                physics: Physics,
-                gunAngle: Angle,
-                gunRange: Double = Tank.GunRange,
-                missileSpeed: Double = Tank.MissileSpeed,
-                alive: Boolean)
+ * 坦克: 有各种各样的坦克
+ */
+case class Tank(
+    id: EntityId,
+    ai: AI[Unit],
+    physics: Physics,
+    gunAngle: Angle,
+    gunRange: Double = Tank.GunRange,
+    missileSpeed: Double = Tank.MissileSpeed,
+    alive: Boolean)
     extends Entity {
   type This = Tank
-  def replaceId(newId: EntityId): Tank           = copy(id = newId)
-  def gunFacing: Angle                           = physics.facing + gunAngle
-  def accelerate: Tank                           = accelerateForward(Tank.Acceleration)
-  def withAI(newAI: Moves.AI[Unit]): Tank        = copy(ai = newAI)
-  def kill: Tank                                 = copy(alive = false, ai = AIDone)
-  def fire: Missile                              = Missile.fireToward(pos + Vec.fromAngle(facing, 20.0), facing, missileSpeed, gunRange)
+  def replaceId(newId: EntityId): Tank    = copy(id = newId)
+  def gunFacing: Angle                    = physics.facing + gunAngle
+  def accelerate: Tank                    = accelerateForward(Tank.Acceleration)
+  def withAI(newAI: Moves.AI[Unit]): Tank = copy(ai = newAI)
+  def kill: Tank                          = copy(alive = false, ai = AIDone)
+  def fire: Missile = Missile.fireToward(pos + Vec.fromAngle(facing, 20.0), facing, missileSpeed, gunRange)
   def updatePhysics(f: Physics => Physics): Tank = copy(physics = f(physics))
 }

@@ -1,18 +1,32 @@
 package info.galudisu.model
 
-import info.galudisu.maths._
+import info.galudisu.maths.*
 
 /**
-  * 物理作用
-  * @param facing 面向
-  * @param pos 位置
-  * @param vel 下个位置
-  * @param acc 加速度
-  * @param size 大小
-  * @param friction 摩擦力
-  * @param maxSpeed 最大速度
-  */
-case class Physics(facing: Angle, pos: Vec, vel: Vec, acc: Vec, size: Dim, friction: Percentage, maxSpeed: Double) {
+ * 物理作用
+ * @param facing
+ *   面向
+ * @param pos
+ *   位置
+ * @param vel
+ *   下个位置
+ * @param acc
+ *   加速度
+ * @param size
+ *   大小
+ * @param friction
+ *   摩擦力
+ * @param maxSpeed
+ *   最大速度
+ */
+case class Physics(
+    facing: Angle,
+    pos: Vec,
+    vel: Vec,
+    acc: Vec,
+    size: Dim,
+    friction: Percentage,
+    maxSpeed: Double) {
   def run(allowMove: Vec => Boolean): Physics = {
     val nextPos = constrainPos(allowMove, pos + vel)
     val nextVel = constrainVel((vel * frictionMult.amount) + acc)
@@ -34,6 +48,6 @@ case class Physics(facing: Angle, pos: Vec, vel: Vec, acc: Vec, size: Dim, frict
 
   private def frictionMult = friction.complement
 
-  private def constrainPos(allowMove: Vec => Boolean, newPos: Vec): Vec = if (allowMove(newPos)) newPos else pos
-  private def constrainVel(newVel: Vec): Vec                            = if (newVel.length > maxSpeed) vel.withLength(maxSpeed) else newVel
+  private def constrainPos(allowMove: Vec => Boolean, newPos: Vec): Vec = if allowMove(newPos) then newPos else pos
+  private def constrainVel(newVel: Vec): Vec = if newVel.length > maxSpeed then vel.withLength(maxSpeed) else newVel
 }
